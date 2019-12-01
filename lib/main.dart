@@ -77,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -90,39 +90,53 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               new Flexible(
-                flex: 1,
-                child: new TextFormField(
-                  decoration: InputDecoration(hintText: "0.00"),
-                  controller: _controller,
-                  showCursor: false,
-                  maxLines: 1,
-                  textAlign: TextAlign.center,
-                  textDirection: TextDirection.rtl,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: <TextInputFormatter>[
-                    WhitelistingTextInputFormatter.digitsOnly,
-                  ],
-                  onChanged: (text) {
-                    _expenseAmount = int.parse(text);
-                    print(_expenseAmount);
-                  },
-                ),
-              ),
+                  flex: 3,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 20.0, right:60.0),
+                    child: new TextFormField(
+                      decoration: InputDecoration(
+                        hintText: "0.00",
+                        border: InputBorder.none,
+                      ),
+                      controller: _controller,
+                      maxLines: 1,
+                      showCursor: true,
+                      textDirection: TextDirection.rtl,
+                      textAlign: TextAlign.right,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        WhitelistingTextInputFormatter.digitsOnly,
+                      ],
+                      style: TextStyle(fontSize: 20.0),
+                      onChanged: (text) {
+                        _expenseAmount = int.parse(text);
+                        // print(_expenseAmount);
+                        print(_controller.text.toString());
+                        print(_controller.text.toString().length);
+
+                        var cursorPos = _controller.selection;
+                        if (cursorPos.start > _controller.text.length) {
+                          cursorPos = new TextSelection.fromPosition(
+                              new TextPosition(
+                                  offset: _controller.text.length));
+                        }
+                        _controller.selection = cursorPos;
+
+                        // _controller.selection = TextSelection.collapsed(
+                        //     offset: _controller.text.toString().length,
+                        //     affinity: TextAffinity.upstream);
+                      },
+                      // onTap: () => print(_controller.selection),
+                    ),
+                  )),
               RaisedButton(
-                  onPressed: null,
+                  onPressed: () => _controller.clear(),
                   child: Text(
                     'Save',
                     style: TextStyle(fontSize: 15),
                   )),
             ],
           ),
-          // Text(
-          //   'You have pushed the button this many times:',
-          // ),
-          // Text(
-          //   '$_counter',
-          //   style: Theme.of(context).textTheme.display1,
-          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
