@@ -2,8 +2,8 @@ import 'dart:ui' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
-import 'package:flutter_try/answer.dart';
-import './question.dart';
+import './quiz.dart';
+import './result.dart';
 
 void main() => runApp(MyApp());
 
@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final _controller =
       MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
 
-  final questions = const [
+  final _questions = const [
     {
       'questionText': 'What\'s your favorite color?',
       'answers': ['Black', 'Red', 'Green', 'White'],
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: _questionIndex < questions.length
+      body: _questionIndex < _questions.length
           ? Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
@@ -143,16 +143,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         )),
                   ],
                 ),
-                Question(questions[_questionIndex]["questionText"]),
-                ...(questions[_questionIndex]['answers'] as List<String>)
-                    .map((answer) {
-                  return Answer(answer, _answerQuestion);
-                }).toList(),
+                Quiz(
+                  questions: _questions,
+                  questionIndex: _questionIndex,
+                  answerQuestion: _answerQuestion,
+                )
               ],
             )
-          : Center(
-              child: Text('You did it'),
-            ),
+          : Result(),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
