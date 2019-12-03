@@ -2,6 +2,7 @@ import 'dart:ui' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import 'package:flutter_try/answer.dart';
 import './question.dart';
 
 void main() => runApp(MyApp());
@@ -54,6 +55,17 @@ class _MyHomePageState extends State<MyHomePage> {
   final _controller =
       MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
 
+  final questions = const [
+    {
+      'questionText': 'What\'s your favorite color?',
+      'answers': ['Black', 'Red', 'Green', 'White'],
+    },
+    {
+      'questionText': 'What\'s your favorite animal?',
+      'answers': ['Dog', 'Cat', 'Rabbit', 'Bird'],
+    }
+  ];
+
   void _answerQuestion() {
     setState(() {
       _questionIndex = _questionIndex + 1;
@@ -63,100 +75,85 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var questions = [
-      {
-        'questionText': 'What\'s your favorite color?',
-        'answer': ['Black', 'Red', 'Green', 'White'],
-      },
-      {
-        'questionText': 'What\'s your favorite animal?',
-        'answer': ['Dog', 'Cat', 'Rabbit', 'Bird'],
-      }
-    ];
-
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              const RaisedButton(
-                onPressed: null,
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(fontSize: 15),
-                ),
-              ),
-              new Flexible(
-                  flex: 3,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 20.0, right: 60.0),
-                    child: new TextFormField(
-                      decoration: InputDecoration(
-                        hintText: "0.00",
-                        border: InputBorder.none,
+      body: _questionIndex < questions.length
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    const RaisedButton(
+                      onPressed: null,
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(fontSize: 15),
                       ),
-                      controller: _controller,
-                      maxLines: 1,
-                      showCursor: true,
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.right,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly,
-                      ],
-                      style: TextStyle(fontSize: 20.0),
-                      onChanged: (text) {
-                        _expenseAmount = int.parse(text);
-                        // print(_expenseAmount);
-                        print(_controller.text.toString());
-                        print(_controller.text.toString().length);
-
-                        var cursorPos = _controller.selection;
-                        if (cursorPos.start > _controller.text.length) {
-                          cursorPos = new TextSelection.fromPosition(
-                              new TextPosition(
-                                  offset: _controller.text.length));
-                        }
-                        _controller.selection = cursorPos;
-
-                        // _controller.selection = TextSelection.collapsed(
-                        //     offset: _controller.text.toString().length,
-                        //     affinity: TextAffinity.upstream);
-                      },
-                      // onTap: () => print(_controller.selection),
                     ),
-                  )),
-              RaisedButton(
-                  onPressed: () => _controller.clear(),
-                  child: Text(
-                    'Save',
-                    style: TextStyle(fontSize: 15),
-                  )),
-            ],
-          ),
-          Question(questions[_questionIndex]["questionText"]),
-          RaisedButton(
-            onPressed: null,
-            child: Text('Answer 1'),
-          ),
-          RaisedButton(
-            onPressed: null,
-            child: Text('Answer 2'),
-          ),
-          RaisedButton(
-            onPressed: null,
-            child: Text('Answer 3'),
-          ),
-        ],
-      ),
-       // This trailing comma makes auto-formatting nicer for build methods.
+                    new Flexible(
+                        flex: 3,
+                        child: Container(
+                          margin: EdgeInsets.only(left: 20.0, right: 60.0),
+                          child: new TextFormField(
+                            decoration: InputDecoration(
+                              hintText: "0.00",
+                              border: InputBorder.none,
+                            ),
+                            controller: _controller,
+                            maxLines: 1,
+                            showCursor: true,
+                            textDirection: TextDirection.rtl,
+                            textAlign: TextAlign.right,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              WhitelistingTextInputFormatter.digitsOnly,
+                            ],
+                            style: TextStyle(fontSize: 20.0),
+                            onChanged: (text) {
+                              _expenseAmount = int.parse(text);
+                              // print(_expenseAmount);
+                              print(_controller.text.toString());
+                              print(_controller.text.toString().length);
+
+                              var cursorPos = _controller.selection;
+                              if (cursorPos.start > _controller.text.length) {
+                                cursorPos = new TextSelection.fromPosition(
+                                    new TextPosition(
+                                        offset: _controller.text.length));
+                              }
+                              _controller.selection = cursorPos;
+
+                              // _controller.selection = TextSelection.collapsed(
+                              //     offset: _controller.text.toString().length,
+                              //     affinity: TextAffinity.upstream);
+                            },
+                            // onTap: () => print(_controller.selection),
+                          ),
+                        )),
+                    RaisedButton(
+                        onPressed: () => _controller.clear(),
+                        child: Text(
+                          'Save',
+                          style: TextStyle(fontSize: 15),
+                        )),
+                  ],
+                ),
+                Question(questions[_questionIndex]["questionText"]),
+                ...(questions[_questionIndex]['answers'] as List<String>)
+                    .map((answer) {
+                  return Answer(answer, _answerQuestion);
+                }).toList(),
+              ],
+            )
+          : Center(
+              child: Text('You did it'),
+            ),
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
