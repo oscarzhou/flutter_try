@@ -2,6 +2,7 @@ import 'dart:ui' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
+import './question.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,27 +49,30 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _expenseAmount = 0;
+  int _questionIndex = 0;
 
   final _controller =
       MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: ',');
-  void _incrementCounter() {
+
+  void _answerQuestion() {
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
+      _questionIndex = _questionIndex + 1;
     });
+    print(_questionIndex);
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    var questions = [
+      {
+        'questionText': 'What\'s your favorite color?',
+        'answer': ['Black', 'Red', 'Green', 'White'],
+      },
+      {
+        'questionText': 'What\'s your favorite animal?',
+        'answer': ['Dog', 'Cat', 'Rabbit', 'Bird'],
+      }
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -92,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
               new Flexible(
                   flex: 3,
                   child: Container(
-                    margin: EdgeInsets.only(left: 20.0, right:60.0),
+                    margin: EdgeInsets.only(left: 20.0, right: 60.0),
                     child: new TextFormField(
                       decoration: InputDecoration(
                         hintText: "0.00",
@@ -137,13 +141,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   )),
             ],
           ),
+          Question(questions[_questionIndex]["questionText"]),
+          RaisedButton(
+            onPressed: null,
+            child: Text('Answer 1'),
+          ),
+          RaisedButton(
+            onPressed: null,
+            child: Text('Answer 2'),
+          ),
+          RaisedButton(
+            onPressed: null,
+            child: Text('Answer 3'),
+          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
